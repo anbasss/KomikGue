@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "./LoadingSpinner";
+import { FaFireAlt } from "react-icons/fa";
 
 export default function ManhwaRecommendationPage() {
   const [manhwaList, setManhwaList] = useState([]);
@@ -11,13 +12,12 @@ export default function ManhwaRecommendationPage() {
 
   useEffect(() => {
     fetch("https://kurokami.vercel.app/api/manhwa-recommendation")
-
       .then((res) => res.json())
       .then((data) => {
         // Ensure data is always an array
         const manhwaArray = Array.isArray(data) ? data : [data];
         setManhwaList(manhwaArray);
-        
+
         setLoading(false);
       })
       .catch((error) => {
@@ -27,7 +27,7 @@ export default function ManhwaRecommendationPage() {
   }, []);
 
   const handleClick = async (manhwa) => {
-    const manhwaId = manhwa.link.split('/manga/')[1]?.replace(/\/$/, '');
+    const manhwaId = manhwa.link.split("/manga/")[1]?.replace(/\/$/, "");
 
     if (!manhwaId) {
       console.error("Could not determine manhwa ID from:", manhwa);
@@ -36,11 +36,13 @@ export default function ManhwaRecommendationPage() {
     }
 
     try {
-      const response = await fetch(`https://kurokami.vercel.app/api/manhwa-detail/${manhwaId}`);
+      const response = await fetch(
+        `https://kurokami.vercel.app/api/manhwa-detail/${manhwaId}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       if (data && data.title) {
         router.push(`/detail/${manhwaId}`);
@@ -63,7 +65,12 @@ export default function ManhwaRecommendationPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Manhwa Rekomendasi 👍</h1>
+      <div className="flex ">
+        <h1 className="text-2xl font-bold mb-6">Manhwa Rekomendasi </h1>
+        
+        <FaFireAlt />
+
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {manhwaList.map((manhwa, index) => (
           <div
@@ -85,7 +92,9 @@ export default function ManhwaRecommendationPage() {
               )}
             </div>
             <div className="p-3">
-              <h2 className="font-semibold text-sm mb-1 line-clamp-1">{manhwa.title}</h2>
+              <h2 className="font-semibold text-sm mb-1 line-clamp-1">
+                {manhwa.title}
+              </h2>
               <div className="flex flex-col justify-between">
                 <p className="text-xs text-gray-500">Ch. {manhwa.chapter}</p>
                 <div className="flex items-center">
